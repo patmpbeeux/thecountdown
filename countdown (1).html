@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Countdown</title>
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  body {
+    color: #ffffff;
+    font-family: Georgia, "Times New Roman", serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  #countdown {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.28em;
+    white-space: nowrap;
+    text-shadow: 0 0 10px rgba(255,255,255,.25);
+    font-size: clamp(28px, 7vw, 72px);
+    letter-spacing: 0.04em;
+  }
+
+  .unit {
+    display: inline-flex;
+    align-items: baseline;
+  }
+
+  .number {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .label {
+    font-size: 0.28em;
+    letter-spacing: 0.08em;
+    margin-left: 0.18em;
+    opacity: 0.72;
+  }
+
+  .sep {
+    opacity: 0.45;
+  }
+
+  #ended {
+    display: none;
+    font-size: clamp(28px, 7vw, 72px);
+    letter-spacing: 0.08em;
+    text-shadow: 0 0 10px rgba(255,255,255,.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #countdown { text-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="countdown" aria-live="polite">
+    <span class="unit"><span id="days" class="number">00</span><span class="label">D</span></span>
+    <span class="sep">:</span>
+    <span class="unit"><span id="hours" class="number">00</span><span class="label">H</span></span>
+    <span class="sep">:</span>
+    <span class="unit"><span id="minutes" class="number">00</span><span class="label">M</span></span>
+    <span class="sep">:</span>
+    <span class="unit"><span id="seconds" class="number">00</span><span class="label">S</span></span>
+  </div>
+
+  <div id="ended">00 : 00 : 00 : 00</div>
+
+<script>
+  // December 19, 2026 at 11:00 AM Pacific Time.
+  // The -08:00 offset is correct for December (Pacific Standard Time).
+  const target = new Date("2026-12-19T11:00:00-08:00").getTime();
+
+  const days = document.getElementById("days");
+  const hours = document.getElementById("hours");
+  const minutes = document.getElementById("minutes");
+  const seconds = document.getElementById("seconds");
+  const countdown = document.getElementById("countdown");
+  const ended = document.getElementById("ended");
+
+  function update() {
+    const remaining = target - Date.now();
+
+    if (remaining <= 0) {
+      countdown.style.display = "none";
+      ended.style.display = "block";
+      return;
+    }
+
+    const totalSeconds = Math.floor(remaining / 1000);
+    const d = Math.floor(totalSeconds / 86400);
+    const h = Math.floor((totalSeconds % 86400) / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+
+    days.textContent = String(d).padStart(2, "0");
+    hours.textContent = String(h).padStart(2, "0");
+    minutes.textContent = String(m).padStart(2, "0");
+    seconds.textContent = String(s).padStart(2, "0");
+  }
+
+  update();
+  setInterval(update, 1000);
+</script>
+</body>
+</html>
